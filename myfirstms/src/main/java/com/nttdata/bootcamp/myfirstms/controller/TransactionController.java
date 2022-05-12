@@ -1,6 +1,5 @@
 package com.nttdata.bootcamp.myfirstms.controller;
 import com.nttdata.bootcamp.myfirstms.model.dto.Transaction;
-import com.nttdata.bootcamp.myfirstms.model.dto.Transaction;
 import com.nttdata.bootcamp.myfirstms.repository.TransactionRepository;
 
 import java.util.HashMap;
