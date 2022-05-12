@@ -2,7 +2,9 @@ package com.nttdata.bootcamp.myfirstms.controller;
 import com.nttdata.bootcamp.myfirstms.model.dto.Client;
 import com.nttdata.bootcamp.myfirstms.repository.ClientRepository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
@@ -38,6 +41,7 @@ public class ClientController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Client> updateClient(@PathVariable("id") String id, @RequestBody Client temp_client) {
+      //Map<String, Object> salida = new HashMap<>();
       Optional<Client> client_doc = client_repo.findById(id);
       if (client_doc.isPresent()) {
         Client _client = client_doc.get();
@@ -48,18 +52,27 @@ public class ClientController {
       } else {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       }
-    }
+    } 
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable("id") String id) {
+    @DeleteMapping("delete/{id}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> deleteClient(@PathVariable("id") String id) {
+      Map<String, Object> salida = new HashMap<>();
       try {
-        client_repo.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        Optional<Client> client_doc = client_repo.findById(id);
+        if (client_doc.isPresent()) {
+          client_repo.deleteById(id);
+          salida.put("mensaje", "Eliminado :)");
+          //return ResponseEntity.ok(salida);
+        }else{
+          salida.put("mensaje", "Id no encontrado");
+        }
       } catch (Exception e) {
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        e.printStackTrace();
+        salida.put("mensaje", "error");
       }
+      return ResponseEntity.ok(salida);
     }
-    
 
     
 }
