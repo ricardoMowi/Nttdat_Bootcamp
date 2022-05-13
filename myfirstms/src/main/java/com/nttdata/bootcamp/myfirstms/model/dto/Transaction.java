@@ -17,8 +17,8 @@ import lombok.Setter;
 public class Transaction {
     @Id
     private String id;
-    private Date date;
-    private String id_client;
+    private Date register_date;
+    private String idProduct;
     private Double amount;
     private String transaction_type;
     private String status;

@@ -28,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 public class ProductController {
     @Autowired
     private ProductRepository product_repo;
+    @Autowired
     private ClientRepository client_repo;
 
     @PostMapping
@@ -41,6 +42,14 @@ public class ProductController {
     public List<Product> getAllproducts(){
         return product_repo.findAll();
     }
+
+
+    // @GetMapping("getByClient/{id}")
+    // @ResponseStatus(HttpStatus.OK)
+    // public List<Product> getByClient(@PathVariable("id") String id){
+    //     return product_repo.findByClientId(id);
+    // }    
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateproduct(@PathVariable("id") String id, @RequestBody Product temp_product) {
@@ -72,53 +81,35 @@ public class ProductController {
         salida.put("mensaje", "error");
       }
       return ResponseEntity.ok(salida);
-    }
+    }   
 
 
-
-    /////////////////////
-    @PostMapping("createCurrentAccount")
+    ///Microservicio 0: GetDataClient 
+    @GetMapping("GetDataClient/{id}")
     @ResponseBody
-    public ResponseEntity <Map<String, Object>> createCurrentAccount(@RequestBody Product new_product ){
-
+    public ResponseEntity<Map<String, Object>> GetDataClient(@PathVariable("id") String id){
       Map<String, Object> salida = new HashMap<>();
-      //campos obligatorios
-      new_product.setIs_account(true);
-      new_product.setIs_credit(false);
 
-      
-      //Identificar y validar cliente tipo de cliente
-      Optional<Client> client_doc = client_repo.findById(new_product.getId_client());
-        if (client_doc.isPresent()) {
-          //cliente identificado   
-          Client temp = client_doc.get();
-          if(temp.getIs_person() == true){
-            //si es persona, solo una cuenta de ahorro
-
-          }
-          product_repo.save(new_product);
-          salida.put("mensaje", "Cuenta creada");
-        }else{
-          salida.put("mensaje", "Id de cliente no encontrado");
-        }
-        return ResponseEntity.ok(salida);
-    }
-    
-    @PostMapping("createSavingAccount")
-    @ResponseStatus(HttpStatus.OK)
-    public void createSavingAccount(@RequestBody Product new_produc ){
-      //Identificar tipo de cuenta
-      //Identificar tipo de cliente
-      product_repo.save(new_produc);
+      //Validar id del cliente
+      Optional<Client> client_doc = client_repo.findById(id);
+      if (client_doc.isPresent()) {
+        //data del cliente
+        salida.put("client", client_doc);
+        //obtener cantidad de productos
+        List <Product> Products_1 = product_repo.findByProductTypeAndStatus("SAVING_ACCOUNT","ACTIVE");  
+        List <Product> Products_2 = product_repo.findByProductTypeAndStatus("CURRENT_ACCOUNT","ACTIVE"); 
+        List <Product> Products_3 = product_repo.findByProductTypeAndStatus("FIXED_TERM_ACCOUNT","ACTIVE"); 
+        int Q_1 =  Products_1.size();
+        int Q_2 =  Products_2.size();
+        int Q_3 =  Products_3.size();
+        //prepara data para enviar
+        salida.put("cant_cuenta_ahorro", Q_1);
+        salida.put("cant_cuenta_corriente", Q_2);
+        salida.put("cant_cuenta_plazo_fijo", Q_3);
+      }else{
+        salida.put("status", "Id de Cliente no encontrado");
+      }
+      return ResponseEntity.ok(salida);
     }
 
-    @PostMapping("createFixedTermAccount")
-    @ResponseStatus(HttpStatus.OK)
-    public void createFixedTermAccount(@RequestBody Product new_produc ){
-      //Identificar tipo de cuenta
-      //Identificar tipo de cliente
-      product_repo.save(new_produc);
-    }
-
-    
 }

@@ -15,14 +15,11 @@ import lombok.Setter;
 public class Client {
     @Id
     private String id;
-    private Boolean is_person;
-    private Boolean is_comany;
-    private String Name;
-    private String Last_name;
+    private String client_type;
+    private String name;
+    private String last_name;
+    private String RUC;
     private String address;
     private String email;
-    private String birthdate;
     private String status;
-    private Boolean is_owner;
-    private Boolean is_authorized_signer;
 }

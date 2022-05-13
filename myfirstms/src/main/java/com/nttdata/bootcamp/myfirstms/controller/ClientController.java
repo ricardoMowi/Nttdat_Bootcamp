@@ -30,13 +30,27 @@ public class ClientController {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public void createClient(@RequestBody Client new_client ){
-        client_repo.save(new_client);
+      new_client.setStatus("ACTIVE");  
+      client_repo.save(new_client);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Client> getAllClients(){
         return client_repo.findAll();
+    }
+
+    @GetMapping("getDataClient/{id}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getClientData(@PathVariable("id") String id){
+      Map<String, Object> salida = new HashMap<>();
+      Optional<Client> client_doc = client_repo.findById(id);
+      if (client_doc.isPresent()) {
+        salida.put("client", client_doc);
+      }else{
+        salida.put("status", "Id de Cliente no encontrado");
+      }
+      return ResponseEntity.ok(salida);
     }
 
     @PutMapping("/{id}")
@@ -48,6 +62,21 @@ public class ClientController {
         _client.setAddress(temp_client.getAddress());
         _client.setEmail(temp_client.getEmail());
         _client.setName(temp_client.getName());
+        _client.setRUC(temp_client.getRUC());
+        _client.setLast_name(temp_client.getLast_name());
+        return new ResponseEntity<>(client_repo.save(_client), HttpStatus.OK);
+      } else {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      }
+    } 
+
+    @PutMapping("setInactive/{id}")
+    public ResponseEntity<Client> setInactive(@PathVariable("id") String id, @RequestBody Client temp_client) {
+      //Map<String, Object> salida = new HashMap<>();
+      Optional<Client> client_doc = client_repo.findById(id);
+      if (client_doc.isPresent()) {
+        Client _client = client_doc.get();
+        _client.setStatus("INACTIVE");
         return new ResponseEntity<>(client_repo.save(_client), HttpStatus.OK);
       } else {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

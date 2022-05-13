@@ -52,6 +52,19 @@ public class TransactionController {
       }
     } 
 
+    @PutMapping("setInactive/{id}")
+    public ResponseEntity<Transaction> setInactive(@PathVariable("id") String id) {
+      //Map<String, Object> salida = new HashMap<>();
+      Optional<Transaction> trans_doc = transaction_repo.findById(id);
+      if (trans_doc.isPresent()) {
+        Transaction _client = trans_doc.get();
+        _client.setStatus("INACTIVE");
+        return new ResponseEntity<>(transaction_repo.save(_client), HttpStatus.OK);
+      } else {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      }
+    } 
+
     @DeleteMapping("delete/{id}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteClient(@PathVariable("id") String id) {
