@@ -63,7 +63,7 @@ public class ClientController {
         _client.setEmail(temp_client.getEmail());
         _client.setName(temp_client.getName());
         _client.setRUC(temp_client.getRUC());
-        _client.setLast_name(temp_client.getLast_name());
+        _client.setLastName(temp_client.getLastName());
         return new ResponseEntity<>(client_repo.save(_client), HttpStatus.OK);
       } else {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

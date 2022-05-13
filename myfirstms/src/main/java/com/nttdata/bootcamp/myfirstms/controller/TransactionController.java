@@ -1,5 +1,7 @@
 package com.nttdata.bootcamp.myfirstms.controller;
+import com.nttdata.bootcamp.myfirstms.model.dto.Product;
 import com.nttdata.bootcamp.myfirstms.model.dto.Transaction;
+import com.nttdata.bootcamp.myfirstms.repository.ProductRepository;
 import com.nttdata.bootcamp.myfirstms.repository.TransactionRepository;
 
 import java.util.HashMap;
@@ -26,6 +28,9 @@ import org.springframework.http.ResponseEntity;
 public class TransactionController {
     @Autowired
     private TransactionRepository transaction_repo;
+
+    @Autowired
+    private ProductRepository produt_repo;
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
@@ -81,6 +86,24 @@ public class TransactionController {
       } catch (Exception e) {
         e.printStackTrace();
         salida.put("mensaje", "error");
+      }
+      return ResponseEntity.ok(salida);
+    }
+
+
+    //microservicio: obtener todos los movimientos por producto
+    @GetMapping("GetTransactionsByProduct/{id}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> GetTransactionsByProduct(@PathVariable("id") String id){
+      Map<String, Object> salida = new HashMap<>();
+      //Validar id del cliente
+      Optional<Product> produc_doc = produt_repo.findById(id);
+      if (produc_doc.isPresent()) {
+        //obtener cantidad de productos
+        List <Transaction> transactions = transaction_repo.findByIdProduct(id);  
+        salida.put("transactions", transactions);
+      }else{
+        salida.put("status", "Id del producto no encontrado");
       }
       return ResponseEntity.ok(salida);
     }

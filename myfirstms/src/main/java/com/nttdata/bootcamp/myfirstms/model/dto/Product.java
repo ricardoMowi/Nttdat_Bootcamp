@@ -22,12 +22,12 @@ public class Product {
     @Id
     private String id;
     private String clientId;
-    private Date creation_Date;
-    private int maximum_transaction_limit;
-    private Double maintenance_commission;
+    private Date creationDate;
+    private int maximumTransactionLimit;
+    private Double maintenanceCommission;
     private Double amount;
     private String productType;
     private String status;
     private String[] owners;
-    private String[] authorized_signer;
+    private String[] authorizedSigner;
 }

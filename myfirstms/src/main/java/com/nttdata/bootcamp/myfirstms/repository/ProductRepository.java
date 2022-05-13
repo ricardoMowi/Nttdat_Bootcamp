@@ -9,5 +9,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface ProductRepository extends MongoRepository <Product, String>{
     List<Product> findByClientId(String clientId);
     List<Product> findByProductTypeAndStatus(String ProductType, String Status);
+    List<Product> findByProductTypeAndClientId (String ProductType, String clientId);
     //Long countProductTypeAndStatus(String ProductType, String Status);
 }

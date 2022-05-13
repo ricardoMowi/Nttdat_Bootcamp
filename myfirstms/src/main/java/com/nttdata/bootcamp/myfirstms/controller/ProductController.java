@@ -51,6 +51,13 @@ public class ProductController {
     // }    
 
 
+    public HashMap<String, Object> getMap() {
+      HashMap<String, Object> map = new HashMap<>();
+        map.put("key1", "gaaaaaaaaaaaaaaaa");
+        map.put("results", "test");
+        return map;
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateproduct(@PathVariable("id") String id, @RequestBody Product temp_product) {
       Optional<Product> product_doc = product_repo.findById(id);
@@ -89,6 +96,9 @@ public class ProductController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> GetDataClient(@PathVariable("id") String id){
       Map<String, Object> salida = new HashMap<>();
+      
+      HashMap<String, Object> test = getMap();
+      String variable_10 = (test.get("key1")).toString();
 
       //Validar id del cliente
       Optional<Client> client_doc = client_repo.findById(id);
@@ -106,10 +116,17 @@ public class ProductController {
         salida.put("cant_cuenta_ahorro", Q_1);
         salida.put("cant_cuenta_corriente", Q_2);
         salida.put("cant_cuenta_plazo_fijo", Q_3);
+        salida.put("test", variable_10);
       }else{
         salida.put("status", "Id de Cliente no encontrado");
       }
       return ResponseEntity.ok(salida);
     }
+
+
+    //Microservicio 1: Crear producto
+    //validar cliente
+    //validar tipo de producto (6 tipos)
+    //
 
 }
